@@ -1,5 +1,7 @@
 const express = require('express');
-const  cors = require('cors')
+const  cors = require('cors');
+const {dbCon} = require('../Database/config');
+
 
 class Server {
 
@@ -7,9 +9,13 @@ class Server {
         //Las propiedades no se enumeran, sino que directamente se colocan en el constructor        
         this.app = express();
         this.port = process.env.PORT;
-
         //Defino como variable o constante, el path del archivo de rutas para usuarios
         this.usuariosPath = '/api/usuarios';
+
+        //---Metodos!!!---
+
+        //Conectar a base de datos:
+        this.conectarMongo();
 
         //Middlewares
         this.middlewares();
@@ -17,6 +23,11 @@ class Server {
         //Llamo a metodo que declara o inicializa los listeners, las rutas que seran
         // permitidas, los controladores de los reques
         this.routes();
+    }
+
+    //Conectamos a base con  monggose:
+    async conectarMongo() {
+        await dbCon();
     }
 
     //Aca se declaran los middlewares.
