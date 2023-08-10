@@ -2,6 +2,7 @@
 
 //para manejar rutas, no uso todo express, solo la clase Router
 const {Router} = require('express');
+const router = Router();
 
 //Para validaciones
 const {check} = require('express-validator');
@@ -14,16 +15,23 @@ const { usuariosGet,
         usuariosPatch } = require('../controllers/usuarios');
 
 //Importo middleware de validacion
+//Dejo importacion basica como ejemplo, pero reemplazo por importacion reducida.
+/*
 const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-JWT');
+const { esAdmin, tieneRol } = require('../middlewares/validar-role');
+*/
+
+const {validarCampos, validarJWT, esAdmin, tieneRol} = require('../middlewares'); //Al llamarlo index no es necesario poner el nombre en la importacion
+
+
 
 //Importo coleccion rol.
 //Comento para dejar ejemplo basico. Pero en realidad debe ir en funcion generica (db-validaciones)
 //const Role = require('../models/rol');
-
 //Importo funcion generica de validaciones contra DB
 const {esRoleValido, existeCorreo, existeUusuarioById} = require('../helpers/db-validaciones');
 
-const router = Router();
 
 
 //ACA EMPIEZA RUTEO!!!
@@ -76,6 +84,9 @@ router.get('/', usuariosGet/*No va (), ya que no estamos invocando la funcion, s
 
 router.delete('/:id', 
         [
+        validarJWT,
+        //esAdmin,
+        tieneRol('ADMIN_ROLE', 'VENTA_ROLE'),
         check('id' /*express-validator se da cuenta si es una propiedad del body o un parametro*/, 'No es un ID valido').isMongoId(),
         check('id').custom(existeUusuarioById),
         validarCampos

@@ -11,6 +11,10 @@ class Server {
         this.port = process.env.PORT;
         //Defino como variable o constante, el path del archivo de rutas para usuarios
         this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
+        this.categoriasPath = '/api/categorias';
+        this.productosPath = '/api/productos';        
+        this.buscarPath = '/api/buscar';
 
         //---Metodos!!!---
 
@@ -80,7 +84,15 @@ class Server {
 
         //Aca inicializo las rutas, una por cada archivo de la carpeta routes
         this.app.use(this.usuariosPath, require('../routes/usuarios'))
-    }
+
+        this.app.use(this.authPath, require('../routes/auth')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico
+
+        this.app.use(this.categoriasPath, require('../routes/categorias')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico        
+
+        this.app.use(this.productosPath, require('../routes/productos')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico
+
+        this.app.use(this.buscarPath, require('../routes/buscar')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico
+    } 
 
     //Metodo que inicia el sercer. Debe ser invocado luego de instanciar la clase
     listen() {

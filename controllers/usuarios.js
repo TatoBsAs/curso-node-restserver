@@ -1,5 +1,5 @@
 //para manejar request y response, no uso todo express, solo las instancias
-const {request, response, query} = require('express');
+const {request, response} = require('express');
 
 //Para encriptar
 const bcryptjs = require('bcryptjs');
@@ -86,7 +86,10 @@ const usuariosPost = async (req = request, res= response) => {
 const usuariosPut = async (req = request, res= response) => {
 
     const {id} = req.params;
-    const {_id, /*Nota 1*/ correo, google, ...resto} = req.body;
+
+    //Aca desestrucuturo todas las propiedades que me pueden mandar y no son
+    //actualizables. Solo dejo es "resto" lo que quiero actualizar
+    const {_id /*Nota 1*/, correo, google, ...resto} = req.body;
 
     /*
     -Nota 1
@@ -181,21 +184,27 @@ const usuariosGet =async  (req = request, res = response) => {
 
 }
 
-const usuariosDelete = async (req, res= response) => {
+const usuariosDelete = async (req = request, res= response) => {
     
     const {id} = req.params;
+    const usuarioLogueado = req.usuarioLogueado;
 
     //Borrado Fisico
     //const usuario = await Usuario.findByIdAndDelete(id);
 
     //Borrado Logico
-    //IMPORTANTE:   findByIdAndUpdate devuelve la foto del objeto antes de ubdatear. Si quremos foto 
+    //IMPORTANTE:   findByIdAndUpdate devuelve la foto del objeto antes de ubdatear. Si queremos foto 
     //              post update, agregar tercer paramentro { new: true }
     const usuario = await Usuario.findByIdAndUpdate(id, {estado:false}, { new: true });     
 
+    //Esto luego de agregar middleware de validar JWT
+    //Ini
+    //const uid = req.uid;
+    //Fin
+
     res.json({
-        msg: ' Delete API from Controller',
-        usuario
+        usuario,
+        usuarioLogueado
     });    
 }
 

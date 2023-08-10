@@ -40,8 +40,11 @@ objeto con el operador rest (...)
 
 */
 usuarioSchema.methods.toJSON = function() {
-    const {contraseña, __v, ...usuario /*operador rest (...nombreObjeto): crea objeto nombreObjeto
+    const {contraseña, __v, _id, ...usuario /*operador rest (...nombreObjeto): crea objeto nombreObjeto
                                          con todos los campos no desagregados */} = this.toObject();
+
+    usuario.uid = _id;
+    
     return usuario;
 }
 
