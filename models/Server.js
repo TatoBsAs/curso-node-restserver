@@ -1,7 +1,7 @@
 const express = require('express');
 const  cors = require('cors');
 const {dbCon} = require('../Database/config');
-
+const fileUpload = require('express-fileupload');
 
 class Server {
 
@@ -15,6 +15,7 @@ class Server {
         this.categoriasPath = '/api/categorias';
         this.productosPath = '/api/productos';        
         this.buscarPath = '/api/buscar';
+        this.uploadsPath = '/api/uploads';        
 
         //---Metodos!!!---
 
@@ -45,6 +46,15 @@ class Server {
 
         //Servir la carpeta public, donde esta el website
         this.app.use(express.static('public'));
+
+        //Para importacion de archivos
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath: true  //Ojo con esta propiedad. Cuando se intenta mover un archivo a una capeta que no existe
+                                    //la o las carpetas se crean. Si no esta bien controlado en el backend lo que es directorios
+                                    //puede generar mucho lio
+        }));
     }
 
     //Metodo donde se declaran todos los listeners o endpoints
@@ -92,6 +102,8 @@ class Server {
         this.app.use(this.productosPath, require('../routes/productos')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico
 
         this.app.use(this.buscarPath, require('../routes/buscar')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico
+
+        this.app.use(this.uploadsPath, require('../routes/uploads')) //Lo dejo en orden de creacion pero se recomienda por orden alfabetico        
     } 
 
     //Metodo que inicia el sercer. Debe ser invocado luego de instanciar la clase
